@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Mail, Inbox, MessageSquare, ArrowRedo, Eye, ThumbsUp } from 'lucide-react';
+import { Mail, Inbox, MessageSquare, Redo, Eye, ThumbsUp } from 'lucide-react';
 
 const capabilities = [
   {
@@ -29,7 +29,7 @@ const capabilities = [
     description: "Automatically engage with posts through intelligent, context-aware commenting systems."
   },
   {
-    icon: <ArrowRedo className="w-6 h-6" />,
+    icon: <Redo className="w-6 h-6" />,
     title: "Reposting",
     description: "Share relevant content across multiple channels with customizable reposting schedules."
   },

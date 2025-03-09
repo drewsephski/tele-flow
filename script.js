@@ -1,11 +1,19 @@
 
 document.addEventListener('DOMContentLoaded', function() {
   // Set current year in footer
-  document.getElementById('current-year').innerText = new Date().getFullYear();
+  document.getElementById('current-year').textContent = new Date().getFullYear();
+  
+  // Mobile menu toggle
+  const mobileMenuButton = document.getElementById('mobile-menu');
+  const navMenu = document.querySelector('.nav-menu');
+  
+  mobileMenuButton.addEventListener('click', function() {
+    this.classList.toggle('active');
+    navMenu.classList.toggle('active');
+  });
   
   // Header scroll effect
   const header = document.getElementById('header');
-  
   window.addEventListener('scroll', function() {
     if (window.scrollY > 50) {
       header.classList.add('scrolled');
@@ -14,218 +22,152 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-  // Mobile menu toggle
-  const mobileMenuBtn = document.getElementById('mobile-menu');
-  const navMenu = document.querySelector('.nav-menu');
-  
-  mobileMenuBtn.addEventListener('click', function() {
-    navMenu.classList.toggle('active');
-    const bars = mobileMenuBtn.querySelectorAll('.bar');
-    
-    if (navMenu.classList.contains('active')) {
-      bars[0].style.transform = 'rotate(-45deg) translate(-5px, 6px)';
-      bars[1].style.opacity = '0';
-      bars[2].style.transform = 'rotate(45deg) translate(-5px, -6px)';
-    } else {
-      bars[0].style.transform = 'none';
-      bars[1].style.opacity = '1';
-      bars[2].style.transform = 'none';
-    }
-  });
-  
-  // Close mobile menu when clicking on a link
-  const navLinks = document.querySelectorAll('.nav-menu a');
-  navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      navMenu.classList.remove('active');
-      const bars = mobileMenuBtn.querySelectorAll('.bar');
-      bars[0].style.transform = 'none';
-      bars[1].style.opacity = '1';
-      bars[2].style.transform = 'none';
-    });
-  });
-  
-  // Smooth scrolling for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      
-      const targetId = this.getAttribute('href');
-      if (targetId === '#') return;
-      
-      const targetElement = document.querySelector(targetId);
-      if (targetElement) {
-        const headerHeight = header.offsetHeight;
-        const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerHeight;
-        
-        window.scrollTo({
-          top: targetPosition,
-          behavior: 'smooth'
-        });
-      }
-    });
-  });
-  
   // Pricing toggle
   const monthlyToggle = document.getElementById('monthly-toggle');
   const yearlyToggle = document.getElementById('yearly-toggle');
   const priceElements = document.querySelectorAll('.price-amount');
-  const originalPrices = Array.from(priceElements).map(el => parseInt(el.textContent.replace('$', '')));
+  const periodElements = document.querySelectorAll('.price-period');
   
-  monthlyToggle.addEventListener('click', function() {
-    monthlyToggle.classList.add('active');
-    yearlyToggle.classList.remove('active');
+  // Store original prices
+  const originalPrices = Array.from(priceElements).map(el => el.textContent);
+  
+  yearlyToggle.addEventListener('click', function() {
+    this.classList.add('active');
+    monthlyToggle.classList.remove('active');
     
+    // Update prices with 20% discount
     priceElements.forEach((el, index) => {
-      el.textContent = `$${originalPrices[index]}`;
+      const originalPrice = parseInt(originalPrices[index].replace('$', ''));
+      const discountedPrice = Math.round(originalPrice * 0.8);
+      el.textContent = '$' + discountedPrice;
+    });
+    
+    // Update period text
+    periodElements.forEach(el => {
+      el.textContent = 'per year';
     });
   });
   
-  yearlyToggle.addEventListener('click', function() {
-    yearlyToggle.classList.add('active');
-    monthlyToggle.classList.remove('active');
+  monthlyToggle.addEventListener('click', function() {
+    this.classList.add('active');
+    yearlyToggle.classList.remove('active');
     
+    // Restore original prices
     priceElements.forEach((el, index) => {
-      const yearlyPrice = Math.floor(originalPrices[index] * 0.8);
-      el.textContent = `$${yearlyPrice}`;
+      el.textContent = originalPrices[index];
+    });
+    
+    // Restore period text
+    periodElements.forEach(el => {
+      el.textContent = 'per month';
     });
   });
   
   // Testimonial slider
+  const testimonialDots = document.querySelectorAll('.dot');
   const testimonialSlides = document.querySelectorAll('.testimonial-slide');
-  const dots = document.querySelectorAll('.dot');
-  const progressBar = document.querySelector('.progress-bar');
   let currentSlide = 0;
-  let slideInterval;
+  let testimonialInterval;
   
   function showSlide(index) {
-    testimonialSlides.forEach(slide => slide.classList.remove('active'));
-    dots.forEach(dot => dot.classList.remove('active'));
+    // Hide all slides
+    testimonialSlides.forEach(slide => {
+      slide.classList.remove('active');
+    });
     
+    // Remove active class from all dots
+    testimonialDots.forEach(dot => {
+      dot.classList.remove('active');
+    });
+    
+    // Show selected slide
     testimonialSlides[index].classList.add('active');
-    dots[index].classList.add('active');
-    
-    // Reset animation
-    progressBar.style.animation = 'none';
-    void progressBar.offsetWidth; // Trigger reflow
-    progressBar.style.animation = 'progress 8s linear infinite';
-    
+    testimonialDots[index].classList.add('active');
     currentSlide = index;
+    
+    // Reset progress bar animation
+    const progressBar = document.querySelector('.progress-bar');
+    progressBar.style.animation = 'none';
+    setTimeout(() => {
+      progressBar.style.animation = 'progress 8s linear infinite';
+    }, 10);
   }
   
-  function nextSlide() {
-    let nextIndex = currentSlide + 1;
-    if (nextIndex >= testimonialSlides.length) {
-      nextIndex = 0;
-    }
-    showSlide(nextIndex);
-  }
-  
-  // Initialize slider
-  showSlide(0);
-  
-  // Start auto-rotation
-  slideInterval = setInterval(nextSlide, 8000);
-  
-  // Add click event to dots
-  dots.forEach((dot, index) => {
+  // Set up click event for dots
+  testimonialDots.forEach((dot, index) => {
     dot.addEventListener('click', () => {
-      clearInterval(slideInterval);
       showSlide(index);
-      slideInterval = setInterval(nextSlide, 8000);
+      clearInterval(testimonialInterval);
+      startTestimonialInterval();
     });
   });
   
-  // Handle hover pause/resume for testimonials
-  const testimonialWrapper = document.querySelector('.testimonial-wrapper');
+  // Auto-advance slides
+  function startTestimonialInterval() {
+    testimonialInterval = setInterval(() => {
+      let nextSlide = currentSlide + 1;
+      if (nextSlide >= testimonialSlides.length) {
+        nextSlide = 0;
+      }
+      showSlide(nextSlide);
+    }, 8000);
+  }
   
-  testimonialWrapper.addEventListener('mouseenter', () => {
-    clearInterval(slideInterval);
-    progressBar.style.animationPlayState = 'paused';
-  });
+  // Initialize slider
+  if (testimonialSlides.length > 0) {
+    showSlide(0);
+    startTestimonialInterval();
+  }
   
-  testimonialWrapper.addEventListener('mouseleave', () => {
-    slideInterval = setInterval(nextSlide, 8000);
-    progressBar.style.animationPlayState = 'running';
-  });
-  
-  // Contact form submission
+  // Contact form handling
   const contactForm = document.getElementById('contactForm');
   const formError = document.getElementById('formError');
   const formSuccess = document.getElementById('formSuccess');
   const submitButton = document.getElementById('submitButton');
-  const submitText = submitButton.querySelector('span');
-  const spinner = submitButton.querySelector('.spinner');
   
-  contactForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const contactInput = document.getElementById('contact');
-    const messageInput = document.getElementById('message');
-    
-    // Reset previous error
-    formError.style.display = 'none';
-    
-    // Validate
-    if (!contactInput.value.trim()) {
-      formError.textContent = 'Please enter your Telegram username or email';
-      formError.style.display = 'block';
-      return;
-    }
-    
-    if (!messageInput.value.trim()) {
-      formError.textContent = 'Please enter a message';
-      formError.style.display = 'block';
-      return;
-    }
-    
-    // Show loading state
-    submitText.textContent = 'Sending...';
-    spinner.style.display = 'inline-block';
-    submitButton.disabled = true;
-    
-    // Simulate form submission (Replace with actual form handling)
-    setTimeout(() => {
-      // Hide form, show success message
-      formSuccess.classList.add('active');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+      e.preventDefault();
       
-      // Reset after 3 seconds
+      // Show loading state
+      submitButton.classList.add('loading');
+      submitButton.querySelector('span').style.opacity = '0';
+      submitButton.querySelector('.spinner').style.display = 'block';
+      
+      // Simulate form submission (replace with actual API call)
       setTimeout(() => {
-        formSuccess.classList.remove('active');
-        contactForm.reset();
-        submitText.textContent = 'Send Message';
-        spinner.style.display = 'none';
-        submitButton.disabled = false;
-      }, 3000);
-    }, 1500);
-  });
-  
-  // Add animation classes to elements when they enter the viewport
-  const animateOnScroll = function() {
-    const elements = document.querySelectorAll('.feature-card, .pricing-card, .contact-card');
-    
-    elements.forEach(element => {
-      const position = element.getBoundingClientRect();
-      
-      // If element is in viewport
-      if (position.top < window.innerHeight - 100) {
-        element.style.opacity = '1';
-        element.style.transform = 'translateY(0)';
-      }
+        submitButton.classList.remove('loading');
+        submitButton.querySelector('span').style.opacity = '1';
+        submitButton.querySelector('.spinner').style.display = 'none';
+        
+        // Show success message
+        formSuccess.classList.add('active');
+      }, 1500);
     });
+  }
+  
+  // Add animation to feature cards
+  const featureCards = document.querySelectorAll('.feature-card, .service-card');
+  
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
   };
   
-  // Set initial state for animated elements
-  const elementsToAnimate = document.querySelectorAll('.feature-card, .pricing-card, .contact-card');
-  elementsToAnimate.forEach(element => {
-    element.style.opacity = '0';
-    element.style.transform = 'translateY(20px)';
-    element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+  
+  featureCards.forEach((card, index) => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(20px)';
+    card.style.transitionDelay = `${index * 0.1}s`;
+    observer.observe(card);
   });
-  
-  // Run on scroll
-  window.addEventListener('scroll', animateOnScroll);
-  
-  // Run once on page load
-  animateOnScroll();
 });

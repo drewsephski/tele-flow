@@ -1,68 +1,23 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 222 47% 4%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 222 47% 6%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 222 47% 6%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 196 100% 40%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -70,7 +25,7 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 196 100% 38%;
     --accent-foreground: 210 40% 98%;
 
     --destructive: 0 62.8% 30.6%;
@@ -79,14 +34,7 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --radius: 1rem;
   }
 }
 
@@ -95,7 +43,135 @@
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground;
+  html {
+    @apply scroll-smooth antialiased;
+    font-family: 'Inter', sans-serif;
   }
+
+  body {
+    @apply bg-dark-400 text-light-200 selection:bg-telegram/20 selection:text-white;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+    overflow-x: hidden;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-dark-300;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-dark-100 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-telegram/50;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-dark-300/70 backdrop-blur-xl border border-dark-100/10 shadow-lg;
+  }
+  
+  .subtle-glass {
+    @apply bg-dark-300/40 backdrop-blur-md border border-dark-100/10;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:shadow-telegram/10 hover:-translate-y-1;
+  }
+  
+  .link {
+    @apply text-telegram hover:text-telegram-light transition-colors duration-200;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .button {
+    @apply px-6 py-3 rounded-full font-medium transition-all duration-300 active:scale-95 focus:outline-none focus:ring-2 focus:ring-telegram/50 focus:ring-offset-2 focus:ring-offset-dark-400;
+  }
+  
+  .button-primary {
+    @apply button bg-telegram text-white hover:bg-telegram-light shadow-md hover:shadow-lg hover:shadow-telegram/20;
+  }
+  
+  .button-secondary {
+    @apply button border border-dark-100 hover:border-telegram/50 hover:text-telegram;
+  }
+  
+  .section {
+    @apply py-20 px-4 md:px-8;
+  }
+  
+  .container {
+    @apply max-w-7xl mx-auto;
+  }
+  
+  .section-title {
+    @apply text-4xl md:text-5xl font-bold mb-4 text-center;
+  }
+  
+  .section-subtitle {
+    @apply text-xl text-light-300 mb-12 text-center max-w-3xl mx-auto text-balance;
+  }
+  
+  .input {
+    @apply w-full px-4 py-3 bg-dark-300/50 border border-dark-100/50 rounded-lg text-light-200 transition-all duration-200 focus:border-telegram focus:outline-none focus:ring-1 focus:ring-telegram/50;
+  }
+  
+  .form-group {
+    @apply mb-4;
+  }
+}
+
+.animate-delay-1 {
+  animation-delay: 0.1s;
+}
+
+.animate-delay-2 {
+  animation-delay: 0.2s;
+}
+
+.animate-delay-3 {
+  animation-delay: 0.3s;
+}
+
+.animate-delay-4 {
+  animation-delay: 0.4s;
+}
+
+.animate-delay-5 {
+  animation-delay: 0.5s;
+}
+
+/* Animation for staggered elements */
+.stagger > * {
+  opacity: 0;
+}
+
+.stagger > *:nth-child(1) {
+  animation: fade-up 0.5s 0.1s ease-out forwards;
+}
+
+.stagger > *:nth-child(2) {
+  animation: fade-up 0.5s 0.2s ease-out forwards;
+}
+
+.stagger > *:nth-child(3) {
+  animation: fade-up 0.5s 0.3s ease-out forwards;
+}
+
+.stagger > *:nth-child(4) {
+  animation: fade-up 0.5s 0.4s ease-out forwards;
+}
+
+.stagger > *:nth-child(5) {
+  animation: fade-up 0.5s 0.5s ease-out forwards;
 }
